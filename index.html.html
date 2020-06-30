@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Weight Converter App</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css?family=Oswald');
+
+		body {
+			background: #333;
+  			color: #FFF;
+  			font-family: 'Oswald', sans-serif;
+		}
+		.container {
+			width: 50%;
+  			margin: 3em auto;
+  			padding: 2em;
+		}
+		header {
+			margin-bottom: 30px;
+		}
+		header h1 {
+			font-size: 2em;
+  			text-align: center;
+  			text-transform: uppercase;
+		}
+		section {
+			display: flex;
+  			flex-direction: column;
+  			align-items: center;
+		}
+		select, input {
+			width: 250px;
+  			outline: none;
+  			border: 0;
+  			height: 30px;
+  			border-radius: 5px;
+  			font-size: 16px;
+  			margin-bottom: 10px;
+  			text-indent: 10px;
+		}
+		option {
+			text-indent: 10px;
+		}
+		#input {
+			margin-bottom: 20px;
+		}
+		#output {
+			width: 70%;
+		}
+		.card {
+			margin-bottom: 10px;
+  			padding: 20px;
+  			text-transform: uppercase;
+  			border-radius: 10px;
+  			overflow: auto;
+		}
+		.card h3 {
+			font-size: 1.6em;
+  			float: left;
+		}
+		.card h4 {
+			font-size: 1.5em;
+  			color: #FFF !important;
+  			float: right;
+		}
+		.kilos {
+			color: #FF9900;
+  			border: 3px solid #FF9900;
+		}
+		.pounds {
+			color: #FF0077;
+  			border: 3px solid #FF0077;
+		}
+		.grams {
+			color: #14BAFC;
+  			border: 3px solid #14BAFC;
+		}
+		.ounces {
+			color: #2CCA31;
+  			border: 3px solid #2CCA31;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<h1>Weight Converter</h1>
+		</header>
+		<section>
+			<div id="input">
+				<select name="weightSelect" id="weightType">
+					<option>Choose weight type</option>
+        			<option value="1">Kilograms</option>
+        			<option value="2">Pounds</option>
+        			<option value="3">Grams</option>
+        			<option value="4">Ounces</option>
+				</select><br>
+				<input type="number" id="weightValue" value="0">
+			</div>
+			<div id="output">
+				<div class="card kilos" id="lbCard">
+					<h3>Pounds</h3>
+        			<h4 id="toPounds"></h4>
+				</div>
+				<div class="card pounds" id="kgCard">
+					<h3>Kilos</h3>
+        			<h4 id="toKilos"></h4>
+				</div>
+				<div class="card grams" id="gmCard">
+					<h3>Grams</h3>
+        			<h4 id="toGrams"></h4>
+				</div>
+				<div class="card ounces" id="ozCard">
+					<h3>Ounces</h3>
+        			<h4 id="toOunces"></h4>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<script>
+		const weightType = document.getElementById('weightType');
+		const weightValue = document.getElementById('weightValue');
+		const ozCard = document.getElementById('ozCard');
+		const kgCard = document.getElementById('kgCard');
+		const toPounds = document.getElementById('toPounds');
+		const toKilos = document.getElementById('toKilos');
+		const toGrams = document.getElementById('toGrams');
+		const toOunces = document.getElementById('toOunces');
+		const output = document.getElementById('output');
+
+		const cardArray = ['lbCard', 'kgCard', 'gmCard', 'ozCard'];
+
+		let wt = 0;
+
+		weightValue.style.visibility = 'hidden';
+		output.style.visibility = 'hidden';
+
+		weightType.addEventListener('change', (e) => {
+			weightValue.style.visibility = 'visible';
+  			output.style.visibility = 'visible';
+
+  			let val = e.target.value;
+
+  			if(val === '1') {
+  				wt = 1;
+    			hideCard('kgCard');
+  			}
+  			if(val === '2') {
+  				wt = 2;
+    			hideCard('lbCard');
+  			}
+  			if(val === '3') {
+  				wt = 3;
+    			hideCard('gmCard');
+  			}
+  			if(val === '4') {
+  				wt = 4;
+    			hideCard('ozCard');
+  			}
+		});
+
+		weightValue.addEventListener('input', (e) => {
+			let val = e.target.value;
+  			convert(wt, val);
+		});
+
+		function hideCard(card) {
+			for(var i=0; i < cardArray.length; i++) {
+				if(cardArray[i] === card) {
+					let match = cardArray[i];
+					document.getElementById(match).style.display = 'none';
+				} else {
+					document.getElementById(cardArray[i]).style.display = 'block';
+				}
+			}
+			updateValues();
+		}
+
+		function updateValues() {
+			let val = weightValue.value;
+  			convert(wt, val);
+		}
+
+		function convert(wt, val) {
+			switch(wt) {
+				case 1:
+				toPounds.innerHTML = (val*2.2046).toFixed(2);
+      			toGrams.innerHTML = val*1000;
+      			toOunces.innerHTML = (val*35.274).toFixed(2);
+      			break;
+      			case 2:
+				toKilos.innerHTML = (val/2.2046).toFixed(2);
+      			toGrams.innerHTML = (val/0.0022046).toFixed(2);
+      			toOunces.innerHTML = val*16;
+      			break;
+      			case 3:
+				toKilos.innerHTML = val/1000;
+      			toPounds.innerHTML = val/500;
+      			toOunces.innerHTML = (val*0.035274).toFixed(4);
+      			break;
+      			case 4:
+				toKilos.innerHTML = (val/35.274).toFixed(3);
+      			toPounds.innerHTML = (val*0.062500).toFixed(3);
+      			toGrams.innerHTML = (val/0.035274).toFixed(4);
+      			break;
+			}
+		}
+	</script>
+</body>
+
+</html>
